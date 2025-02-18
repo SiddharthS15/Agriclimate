@@ -1,0 +1,89 @@
+/* Global Styles */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: #f4f4f4;
+}
+
+/* Navbar Styling */
+.navbar {
+  background: linear-gradient(90deg, #007A33, #004d1a);
+  color: white;
+  display: flex;
+  justify-content: space-between; /* Space between title and nav items */
+  align-items: center;
+  padding: 0.8rem 1.5rem;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Website Name Styling */
+.website-name span {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+   /* Optional: for a professional look */
+}
+
+/* Navbar Items Container */
+.navbar-items {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.nav-item {
+  position: relative;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease-in-out;
+  color: #e6e6e6;
+  text-decoration: none; /* Light gray color for text */
+}
+
+.nav-item:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  transform: scale(1.05);
+  color: #ffffff; /* White color for text on hover */
+}
+
+/* Icon Color */
+.nav-item i {
+  color: #e6e6e6; /* Light gray color for icons */
+  transition: color 0.3s ease;
+}
+
+.nav-item:hover i {
+  color: #ffffff; /* White color for icons on hover */
+}
+
+/* Tooltip Styling */
+.nav-item::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  pointer-events: none;
+  left: calc(50% - 50px);
+}
+
+.nav-item:hover::after {
+  
+  opacity: 1;
+}
