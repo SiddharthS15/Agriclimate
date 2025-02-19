@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { fetchWeatherNews } from "../api/newsData";
+<<<<<<< HEAD
 import "../styles/alerts.css";
+=======
+import "./../styles/alerts.css";
+>>>>>>> 205e396ac27a5c934f533e262440a310d1197523
 
 const Alerts = () => {
     const [news, setNews] = useState([]);

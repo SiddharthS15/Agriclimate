@@ -1,6 +1,10 @@
 export async function fetchWeatherNews() {
     const API_KEY = "74b8c247dd0d45b7a7edd9f5bc37e692";  // Replace with your API Key
+<<<<<<< HEAD
     const response = await fetch(`https://newsapi.org/v2/everything?q=Maharashtra weather OR Maharashtra climate OR Maharashtra agriculture OR "Maharashtra heatwave" OR "Maharashtra monsoon"&language=en&apiKey=${API_KEY}`);
+=======
+    const response = await fetch(`https://newsapi.org/v2/everything?q=Maharashtra weather OR Maharashtra climate OR Maharashtra agriculture&language=en&apiKey=${API_KEY}`);
+>>>>>>> 205e396ac27a5c934f533e262440a310d1197523
     const data = await response.json();
     
     if (data.articles) {
