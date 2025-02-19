@@ -1,8 +1,7 @@
 // src/components/TemperatureRainfallGraph.js
 import React, { useState, useEffect } from "react";
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from "recharts";
-// import { fetchWeatherData } from "../../weatherDataapi/weatherData"; // <-- Importing the fetchWeatherData function
-import { fetchWeatherData } from "../../api/weatherData";
+import { fetchWeatherData } from "../../api/weatherData"; // <-- Importing the fetchWeatherData function
 
 const TemperatureRainfallGraph = () => {
   const [data, setData] = useState([]);
@@ -16,7 +15,7 @@ const TemperatureRainfallGraph = () => {
   }, []);
 
   return (
-    <LineChart width={window.innerWidth - 30} height={400} data={data}>
+    <LineChart width={window.innerWidth - 40} height={400} data={data}>
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis dataKey="date" />
       <YAxis />

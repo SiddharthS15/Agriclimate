@@ -4,7 +4,7 @@ import TemperatureRainfallGraph from "./charts/TemperatureRainfallGraph";
 // import WaterUsageGraph from "./charts/WaterUsageGraph";
 // import ClimateImpactGraph from "./charts/ClimateImpactGraph";
 // import YieldPredictionGraph from "./charts/YieldPredictionGraph";
-import "../styles/prediction.css";
+import "../styles/dashboard.css";
 
 const Dashboard = () => {
   return (

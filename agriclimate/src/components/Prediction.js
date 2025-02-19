@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../styles/prediction.css'; // Import the CSS file
 
 const Prediction = () => {
     const [formData, setFormData] = useState({
@@ -22,7 +23,7 @@ const Prediction = () => {
     };
 
     return (
-        <div>
+        <div className="prediction-container"> {/* Apply the container class */}
             <h2>Crop Prediction</h2>
             <form onSubmit={handleSubmit}>
                 {Object.keys(formData).map((key) => (
@@ -45,3 +46,4 @@ const Prediction = () => {
 };
 
 export default Prediction;
+// In the Prediction component, we define a form with input fields for the user to enter values for N, P, K, temperature, humidity, pH, and rainfall. When the form is submitted, the data is sent to the Flask API endpoint /predict using a POST request. The response from the API is then displayed as the recommended crop in the UI.
