@@ -5,7 +5,7 @@
   padding: 0;
 }
 .navbar {
-  background: linear-gradient(145deg, #003618, #00280d);
+  background: linear-gradient(145deg, #01823b, #039634);
   color: white;
   display: flex;
   justify-content: space-between;
@@ -22,7 +22,7 @@
 .website-name span {
   font-size: 1.8rem;
   font-weight: 700;
-  background: linear-gradient(90deg, #FFD700 30%, #ffffff 70%);
+  background: linear-gradient(90deg, #21163f 30%, #000002 70%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
