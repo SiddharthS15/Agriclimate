@@ -12,7 +12,6 @@ CORS(app)  # Allow frontend requests
 # Load the models
 model_crop = joblib.load("crop_model.pkl")
 model_flood = joblib.load("flood_model.pkl")
-scaler_flood = joblib.load("scaler.pkl")
 
 @app.route('/predict-crop', methods=['POST'])
 def predict_crop():
