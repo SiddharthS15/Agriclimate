@@ -36,6 +36,7 @@ const Chatbot = ({ onBack }) => {
   };
 
   return (
+<<<<<<< HEAD
     <div className="chatbot-container">
       <div className="chat-header">
         <h2>Kisan Mitra</h2>
@@ -49,6 +50,23 @@ const Chatbot = ({ onBack }) => {
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Type your agriculture-related query here..."
           />
+=======
+    <div className="prediction-form-container">
+      <h2>Kissan Mitra</h2>
+      <div className="placeholder-content">
+        <textarea
+          className="chat-input"
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          placeholder="Type your message here..."
+        />
+        <button className="chat-button" onClick={handleGenerate}>
+          Generate
+        </button>
+        <div className="response-container">
+          <h2 className="text-lg font-semibold">Response:</h2>
+          <p>{response}</p>
+>>>>>>> 59cac7a9e74fb2fb016aa807507d29e311b21ab6
         </div>
 
         <button className="generate-button" onClick={handleGenerate}>
