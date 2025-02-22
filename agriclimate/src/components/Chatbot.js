@@ -28,8 +28,7 @@ const Chatbot = ({ onBack }) => {
 
   return (
     <div className="prediction-form-container">
-      <button className="back-button" onClick={onBack}>← Back</button>
-      <h2>Gemini AI Chatbot</h2>
+      <h2>Kissan Mitra</h2>
       <div className="placeholder-content">
         <textarea
           className="chat-input"
