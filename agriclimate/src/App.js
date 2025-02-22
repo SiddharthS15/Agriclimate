@@ -5,6 +5,7 @@ import Home from "./components/Home";
 import Dashboard from "./components/Dashboard";
 import Prediction from "./components/Prediction";
 import Alerts from "./components/Alerts";
+import Chatbot from "./components/Chatbot"
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/prediction" element={<Prediction />} />
         <Route path="/alerts" element={<Alerts />} />
+        <Route path="/chatbot" element={<Chatbot />} />
       </Routes>
     </Router>
   );

@@ -29,6 +29,10 @@ const Navbar = () => {
           <FontAwesomeIcon icon={faBell} />
           <span>Alerts</span>
         </Link>
+        <Link to="/chatbot" className="nav-item" data-tooltip="Chat with AI" >
+          <FontAwesomeIcon icon={faBell} />
+          <span>Chat</span>
+        </Link>
       </div>
     </nav>
   );

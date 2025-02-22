@@ -1,12 +1,15 @@
 import joblib
 import numpy as np
 import pandas as pd
+import requests
 import pickle
 import traceback
 from flask import Flask, request, jsonify
 from sklearn.ensemble import RandomForestClassifier
 from flask_cors import CORS
 from xgboost import XGBRegressor
+import requests
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -123,6 +126,46 @@ def predict_yield():
         print("Unexpected error:", str(e))  # Log full error
         return jsonify({"error": str(e)}), 500
 
+API_KEY = "AIzaSyAJKlsTMH2BkxTfnwTH9jNcgNv3rIgrKyA"
+@app.route("/generate", methods=["POST"])  # ✅ Fixed route
+def generate_content():
+    try:
+        # Extract JSON input from the React request
+        data = request.json
+        prompt = data.get("prompt", "")
+
+        if not prompt:
+            return jsonify({"error": "Prompt is required"}), 400  # Bad Request
+
+        # Gemini API Endpoint
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={API_KEY}"
+        headers = {'Content-Type': 'application/json'}
+        payload = {
+            "contents": [{
+                "parts": [{"text": prompt}]
+            }]
+        }
+
+        # Send request to Gemini API
+        response = requests.post(url, headers=headers, json=payload)
+
+        if response.status_code == 200:
+            result = response.json()
+
+            # Extract AI response safely
+            try:
+                if "candidates" in result and result["candidates"]:
+                    ai_response = result["candidates"][0]["content"]["parts"][0]["text"]
+                    return jsonify({"response": ai_response})
+                else:
+                    return jsonify({"error": "No valid response from AI"}), 500  # Internal Server Error
+            except (KeyError, IndexError):
+                return jsonify({"error": "Unexpected response format"}), 500
+        else:
+            return jsonify({"error": f"API Error {response.status_code}", "details": response.text}), response.status_code
+
+    except Exception as e:
+        return jsonify({"error": "Internal server error", "message": str(e)}), 500  # General server error
 
 
 if __name__ == '__main__':
