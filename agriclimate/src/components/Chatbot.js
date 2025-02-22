@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../chat.css";
+import "../styles/chatbot.css";
 
 const Chatbot = ({ onBack }) => {
   const [prompt, setPrompt] = useState("");
@@ -17,7 +18,9 @@ const Chatbot = ({ onBack }) => {
 
       const data = await res.json();
       if (res.ok) {
-        setResponse(data.response || "No response received");
+        // Process the response to handle markdown-like bold text (**bold**)
+        const processedResponse = data.response ? convertBoldText(data.response) : "No response received";
+        setResponse(processedResponse);
       } else {
         setResponse(data.error || "Error processing request");
       }
@@ -26,24 +29,42 @@ const Chatbot = ({ onBack }) => {
     }
   };
 
+  const convertBoldText = (text) => {
+    // This regex looks for text wrapped with ** and converts it to <b> tags
+    const boldText = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+    return boldText;
+  };
+
   return (
-    <div className="prediction-form-container">
-      <button className="back-button" onClick={onBack}>← Back</button>
-      <h2>Gemini AI Chatbot</h2>
-      <div className="placeholder-content">
-        <textarea
-          className="chat-input"
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-          placeholder="Type your message here..."
-        />
-        <button className="chat-button" onClick={handleGenerate}>
-          Generate
-        </button>
-        <div className="response-container">
-          <h2 className="text-lg font-semibold">Response:</h2>
-          <p>{response}</p>
+    <div className="chatbot-container">
+      <div className="chat-header">
+        <h2>Kisan Mitra</h2>
+      </div>
+      
+      <div className="chat-interface">
+        <div className="chat-input-container">
+          <textarea
+            className="chat-input"
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            placeholder="Type your agriculture-related query here..."
+          />
         </div>
+
+        <button className="generate-button" onClick={handleGenerate}>
+          Generate Response
+        </button>
+
+        {response && (
+          <div className="response-container">
+            <div className="response-title">Expert Response</div>
+            {/* Render the response with HTML */}
+            <div
+              className="response-content"
+              dangerouslySetInnerHTML={{ __html: response }}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
