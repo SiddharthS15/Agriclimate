@@ -53,7 +53,7 @@ const Prediction = () => {
     {
       id: 'flood',
       title: 'Flood Prediction',
-      image: '', // Add image for flood prediction if available
+      image: 'https://media.gettyimages.com/id/1307195960/photo/a-child-standing-in-flooded-waters-on-a-soybean-field-near-a-wind-farm.jpg?s=612x612&w=0&k=20&c=sXpvy2srJWa3eVhjBjKPOzAdaraiOfoLugjY_yI7Y1c=', // Add image for flood prediction if available
       component: <FloodPredictionForm 
         formData={formData}
         handleChange={handleChange}
