@@ -5,6 +5,9 @@ import YieldPrediction from './predictionCards/YieldPrediction';
 import ClimatePrediction from './predictionCards/ClimatePrediction';
 import DiseasePrediction from './predictionCards/DiseasePrediction';
 import FloodPredictionForm from './predictionCards/FloodPrediction'; // Import Flood Prediction form
+import yieldImage from './images/yeild.jpg';
+import climateImage from './images/climate.jpg';
+import diseaseImage from './images/disease.jpg';
 
 const Prediction = () => {
   const [activeCard, setActiveCard] = useState(null);
@@ -62,19 +65,20 @@ const Prediction = () => {
     {
       id: 'yield',
       title: 'Yield Prediction',
-      image: '',
+      image: yieldImage,
+
       component: <YieldPrediction onBack={() => setActiveCard(null)} />
     },
     {
       id: 'climate',
       title: 'Climate Prediction',
-      image: '',
+      image: climateImage,
       component: <ClimatePrediction onBack={() => setActiveCard(null)} />
     },
     {
       id: 'disease',
       title: 'Disease Prediction',
-      image: '',
+      image: diseaseImage,
       component: <DiseasePrediction onBack={() => setActiveCard(null)} />
     }
   ];
