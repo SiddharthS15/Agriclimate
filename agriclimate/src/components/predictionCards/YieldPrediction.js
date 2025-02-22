@@ -167,7 +167,7 @@ const CropPredictionForm = ({ onBack }) => {
         
         if (response.ok) {
             console.log("Prediction Result:", result);
-            predictionResult = (result.predicted_yield);
+            setPredictionResult(result.predicted_yield);
         } else {
             console.error("Error Response:", result);
             alert(result.error || "An error occurred during prediction.");
@@ -246,11 +246,12 @@ const CropPredictionForm = ({ onBack }) => {
           Predict Crop
         </button>
       </form>
-            
-      {predictionResult !== null && (
-        <h3 className="result">Predicted Yield: {predictionResult}</h3>
+
+      {predictionResult && (
+        <div className="result-container">
+          <h3 className="result">Predicted Yield: {predictionResult}</h3>
+        </div>
       )}
-      {error && <h3 className="error">{error}</h3>}
     </div>
   );
 };
