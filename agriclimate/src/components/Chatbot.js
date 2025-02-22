@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import '../index.css';
+import "../chat.css";
 
-const Chatbot = () => {
+const Chatbot = ({ onBack }) => {
   const [prompt, setPrompt] = useState("");
   const [response, setResponse] = useState("");
 
   const handleGenerate = async () => {
     try {
-      const res = await fetch("http://127.0.0.1:5000/generate", {  // Flask API endpoint
+      const res = await fetch("http://127.0.0.1:5000/generate", {  
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -27,23 +27,23 @@ const Chatbot = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
-      <h1 className="text-2xl font-bold mb-4">Gemini AI Chatbot</h1>
-      <textarea
-        className="border p-2 w-96 h-32 mb-4"
-        value={prompt}
-        onChange={(e) => setPrompt(e.target.value)}
-        placeholder="Enter your prompt..."
-      />
-      <button
-        className="bg-blue-500 text-white px-4 py-2 rounded"
-        onClick={handleGenerate}
-      >
-        Generate
-      </button>
-      <div className="mt-4 p-4 bg-white shadow-md w-96">
-        <h2 className="text-lg font-semibold">Response:</h2>
-        <p>{response}</p>
+    <div className="prediction-form-container">
+      <button className="back-button" onClick={onBack}>← Back</button>
+      <h2>Gemini AI Chatbot</h2>
+      <div className="placeholder-content">
+        <textarea
+          className="chat-input"
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          placeholder="Type your message here..."
+        />
+        <button className="chat-button" onClick={handleGenerate}>
+          Generate
+        </button>
+        <div className="response-container">
+          <h2 className="text-lg font-semibold">Response:</h2>
+          <p>{response}</p>
+        </div>
       </div>
     </div>
   );
