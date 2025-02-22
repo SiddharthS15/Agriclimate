@@ -84,10 +84,14 @@ power_transformer = joblib.load("power_transformer.pkl")
 feature_columns = joblib.load("feature_columns.pkl")
 
 
+last_prediction = None  
+
 @app.route("/predict-yield", methods=["POST"])
 def predict_yield():
+    global last_prediction  # Declare global to modify it inside function
+
     try:
-        data = request.get_json(silent=True)  
+        data = request.get_json(silent=True)
         if not data or "features" not in data:
             return jsonify({"error": "Invalid input data, missing 'features' key"}), 400
 
@@ -95,40 +99,42 @@ def predict_yield():
         received_features_count = features.shape[1]
         print(f"Number of features received: {received_features_count}")  
 
-        # Load expected feature columns
-        feature_columns = joblib.load("feature_columns.pkl")
-        feature_columns_length = len(feature_columns)
-        print(f"Expected number of features: {feature_columns_length}")
+        # Check feature length consistency
+        expected_features_count = len(feature_columns)
+        print(f"Expected number of features: {expected_features_count}")
 
-        if received_features_count != feature_columns_length:
+        if received_features_count != expected_features_count:
             return jsonify({
-                "error": f"Feature shape mismatch, expected: {feature_columns_length}, got: {received_features_count}"
+                "error": f"Feature shape mismatch, expected: {expected_features_count}, got: {received_features_count}"
             }), 400
 
-        # Convert features to DataFrame with column names
+        # Convert features to DataFrame
         features_df = pd.DataFrame(features, columns=feature_columns)
         print("Feature DataFrame before transformation:", features_df)
 
-        # Apply transformation (Catch any errors here)
+        # Apply transformation
         try:
             features_scaled = power_transformer.transform(features_df)
         except Exception as e:
             print("Error during transformation:", str(e))
             return jsonify({"error": "PowerTransformer transformation failed: " + str(e)}), 500
 
-        # Make prediction using XGBRegressor model
+        # Make prediction
         prediction = model.predict(features_scaled)[0]
-        prediction = float(prediction)  # Convert float32 to Python float
-        return jsonify({"predicted_yield": round(prediction, 2)})
+        prediction = round(float(prediction), 2)  # Convert to float and round
 
+        # Store prediction in global variable
+        last_prediction = prediction
+
+        return jsonify({"predicted_yield": prediction})
 
     except Exception as e:
-        print("Unexpected error:", str(e))  # Log full error
+        print("Unexpected error:", str(e))  
         return jsonify({"error": str(e)}), 500
 
 API_KEY = "AIzaSyAJKlsTMH2BkxTfnwTH9jNcgNv3rIgrKyA"
 @app.route("/generate", methods=["POST"])  # ✅ Fixed route
-def generate_content():
+def generate_contents():
     try:
         # Extract JSON input from the React request
         data = request.json
@@ -167,6 +173,46 @@ def generate_content():
     except Exception as e:
         return jsonify({"error": "Internal server error", "message": str(e)}), 500  # General server error
 
+@app.route("/predict_yield_explain", methods=["POST"])
+def generate_content():
+    global last_prediction  # Use the global variable
 
+    try:
+        if last_prediction is None:
+            return jsonify({"error": "No prediction available. Please run the yield prediction first."}), 400
+
+        prompt = f"Explain the predicted crop yield result: {last_prediction} in detail."
+
+        # Gemini API Endpoint
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={API_KEY}"
+        headers = {'Content-Type': 'application/json'}
+        payload = {
+            "contents": [{
+                "parts": [{"text": prompt}]
+            }]
+        }
+
+        # Send request to Gemini API
+        response = requests.post(url, headers=headers, json=payload)
+
+        if response.status_code == 200:
+            result = response.json()
+
+            # Extract AI response safely
+            ai_response = (
+                result.get("candidates", [{}])[0]
+                .get("content", {})
+                .get("parts", [{}])[0]
+                .get("text", "No valid explanation generated.")
+            )
+            # Print the explanation to the console
+            print("Gemini Explanation:", ai_response)
+            return jsonify({"response": ai_response})
+        else:
+            return jsonify({"error": f"API Error {response.status_code}", "details": response.text}), response.status_code
+
+    except Exception as e:
+        return jsonify({"error": "Internal server error", "message": str(e)}), 500  # General server error
+    
 if __name__ == '__main__':
     app.run(debug=True)
