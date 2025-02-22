@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const FloodPrediction = () => {
+const FloodPrediction = ({ onBack }) => {
   const [formData, setFormData] = useState({
     march_may: '',  // Rainfall between March and May
     avg_june: '',   // Average rainfall in June (calculated as June/3)
@@ -18,7 +18,6 @@ const FloodPrediction = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Prepare the data for sending
     const data = {
       march_may: formData.march_may,
       avg_june: formData.avg_june,
@@ -26,8 +25,7 @@ const FloodPrediction = () => {
     };
 
     try {
-      // Send data to Flask backend
-      const response = await fetch('http://127.0.0.1:5000/flood-predict', {
+      const response = await fetch('http://127.0.0.1:5000/predict-flood', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -35,7 +33,6 @@ const FloodPrediction = () => {
 
       const result = await response.json();
 
-      // Set the result (flood risk)
       if (result.flood_risk) {
         setFloodRisk(result.flood_risk);
       } else {
@@ -48,6 +45,7 @@ const FloodPrediction = () => {
 
   return (
     <div className="flood-prediction-container">
+      <button className="back-button" onClick={onBack}>← Back</button>
       <h2>Flood Prediction</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
