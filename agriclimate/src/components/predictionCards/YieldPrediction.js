@@ -156,7 +156,7 @@ const CropPredictionForm = ({ onBack }) => {
       features: featureValues
     };
 
-    console.log("Sending data:", requestData); // Debugging
+    console.log("Sending data:", requestData);
 
     try {
       // Call yield prediction endpoint.
@@ -172,22 +172,22 @@ const CropPredictionForm = ({ onBack }) => {
         console.log("Prediction Result:", result);
         setPredictionResult(result.predicted_yield);
 
-        // Now call the Gemini explanation endpoint with the yield prediction and input features.
+        // Now call the explanation endpoint.
         const explanationResponse = await fetch('http://127.0.0.1:5000/predict_yield_explain', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            yield_prediction: result.predicted_yield,
-            features: featureValues
-          })
+          body: JSON.stringify({ predicted_yield: result.predicted_yield }) // Send last prediction
         });
+        
+        
 
         const explanationData = await explanationResponse.json();
 
         if (explanationResponse.ok) {
           console.log("Explanation Result:", explanationData);
-          // Assuming the backend returns an "explanation" field.
-          setExplanationResult(explanationData.explanation);
+          // Update state so that the explanation is shown on the frontend.
+          setExplanationResult(explanationData.response);
+;
         } else {
           console.error("Explanation Error:", explanationData);
           alert(explanationData.error || "An error occurred during explanation.");
@@ -207,7 +207,7 @@ const CropPredictionForm = ({ onBack }) => {
       <button className="back-button" onClick={onBack}>
         ← Back
       </button>
-      <h2>Crop Prediction</h2>
+      <h2>Yield Prediction</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Annual Rainfall:</label>
@@ -265,7 +265,7 @@ const CropPredictionForm = ({ onBack }) => {
           </select>
         </div>
         <button type="submit" className="predict-button">
-          Predict Crop
+          Predict Yield
         </button>
       </form>
 
