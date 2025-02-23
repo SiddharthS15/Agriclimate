@@ -100,17 +100,16 @@
   }
   
   .response-container {
-    white-space: pre-wrap; /* Preserves formatting and line breaks */
-    font-family: Arial, sans-serif; /* Ensures a clean look */
-    font-size: 16px; /* Adjust as needed */
-    font-weight: normal; /* Keeps default text styling */
-    color: #333; /* Dark gray for readability */
-    background-color: #f9f9f9; /* Light background for contrast */
-    padding: 12px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
-    max-width: 600px; /* Prevents overly wide responses */
-    word-wrap: break-word; /* Ensures long words don't overflow */
-    border-left: 4px solid #007bff; /* Adds a left border for emphasis */
-  }
-  
+  white-space: pre-wrap; /* Preserves formatting and line breaks */
+  font-family: Arial, sans-serif; /* Ensures a clean look */
+  font-size: 16px; /* Adjust as needed */
+  font-weight: normal; /* Keeps default text styling */
+  color: #333; /* Dark gray for readability */
+  background-color: #f9f9f9; /* Light background for contrast */
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+  max-width: 600px; /* Prevents overly wide responses */
+  word-wrap: break-word; /* Ensures long words don't overflow */
+  border-left: 4px solid #007bff; /* Adds a left border for emphasis */
+}
