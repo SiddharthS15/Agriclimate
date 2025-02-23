@@ -1,8 +1,39 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome, faChartBar, faCalculator, faBell } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faChartBar, faCalculator, faBell, faCommentDots } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import '../index.css';
+import "../index.css";
+
+const GoogleTranslate = () => {
+  useEffect(() => {
+    // Check if the Google Translate element is already initialized
+    if (window.google && window.google.translate) {
+      return;
+    }
+
+    const addGoogleTranslateScript = () => {
+      const script = document.createElement("script");
+      script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+      script.async = true;
+      document.body.appendChild(script);
+
+      window.googleTranslateElementInit = () => {
+        new window.google.translate.TranslateElement(
+          {
+            pageLanguage: "en",
+            includedLanguages: "hi,en", // Available languages
+            layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE
+          },
+          "google_translate_element"
+        );
+      };
+    };
+
+    addGoogleTranslateScript();
+  }, []);
+
+  return <div id="google_translate_element"></div>;
+};
 
 const Navbar = () => {
   return (
@@ -12,6 +43,7 @@ const Navbar = () => {
         <span>AgriClimate Analytics</span>
       </div>
 
+      {/* Navigation Items */}
       <div className="navbar-items">
         <Link to="/" className="nav-item" data-tooltip="Home - Overview of climate insights">
           <FontAwesomeIcon icon={faHome} />
@@ -29,10 +61,15 @@ const Navbar = () => {
           <FontAwesomeIcon icon={faBell} />
           <span>Alerts</span>
         </Link>
-        <Link to="/chatbot" className="nav-item" data-tooltip="Chat with AI" >
-          <FontAwesomeIcon icon={faBell} />
+        <Link to="/chatbot" className="nav-item" data-tooltip="Chat with AI">
+          <FontAwesomeIcon icon={faCommentDots} />
           <span>Chat</span>
         </Link>
+      </div>
+
+      {/* Google Translate Dropdown */}
+      <div className="nav-translate">
+        <GoogleTranslate />
       </div>
     </nav>
   );
