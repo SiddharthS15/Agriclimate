@@ -70,7 +70,6 @@ const Prediction = () => {
       component: <YieldPrediction onBack={() => setActiveCard(null)} />
     },
     
-    
   ];
 
   return (

@@ -133,48 +133,31 @@ def predict_yield():
         return jsonify({"error": str(e)}), 500
 
 API_KEY = "AIzaSyAJKlsTMH2BkxTfnwTH9jNcgNv3rIgrKyA"
-
 @app.route("/predict_yield_explain", methods=["POST"])
 def predict_yield_explain():
     try:
+        # Get the last prediction from the request
         data = request.json
         predicted_yield = data.get("predicted_yield")
-        input_features = data.get("input_features")  # Get the input data used for prediction
 
-        if predicted_yield is None or input_features is None:
-            return jsonify({"error": "Missing prediction value or input features."}), 400
+        if predicted_yield is None:
+            return jsonify({"error": "No prediction value provided. Please send the predicted yield in the request."}), 400
 
-        # Extract relevant features from input
-        rainfall = input_features.get("Annual_Rainfall", "unknown")
-        pesticide = input_features.get("Pesticide", "unknown")
-        state = [k.replace("State_", "").replace("", " ") for k, v in input_features.items() if k.startswith("State") and v == 1]
-        season = [k.replace("Season_", "").replace("", " ") for k, v in input_features.items() if k.startswith("Season") and v == 1]
-        crop = [k.replace("Crop_", "").replace("", " ") for k, v in input_features.items() if k.startswith("Crop") and v == 1]
+        # Construct the prompt
+        prompt = f"Explain why the predicted yield of {predicted_yield} tons per hectare for the given conditions."
 
-        state = state[0] if state else "unknown"
-        season = season[0] if season else "unknown"
-        crop = crop[0] if crop else "unknown"
-
-        # Construct a simple explanation based on available inputs
-        prompt = f"""
-        The predicted crop yield is {predicted_yield} tons per hectare. The following conditions influenced this prediction:
-        - Crop: {crop}
-        - State: {state}
-        - Season: {season}
-        - Annual Rainfall: {rainfall} mm
-        - Pesticide Usage: {pesticide} units
-        Provide an explanation considering these factors.
-        """
-
-        # Call Gemini API
+        # Call Gemini API for explanation
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={API_KEY}"
         headers = {'Content-Type': 'application/json'}
-        payload = {"contents": [{"parts": [{"text": prompt}]}]}
+        payload = {
+            "contents": [{"parts": [{"text": prompt}]}]
+        }
 
         response = requests.post(url, headers=headers, json=payload)
-        
         if response.status_code == 200:
             result = response.json()
+
+            # Extract AI-generated explanation
             try:
                 explanation = result["candidates"][0]["content"]["parts"][0]["text"]
                 return jsonify({"response": explanation})
@@ -185,7 +168,9 @@ def predict_yield_explain():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-   
+    except Exception as e:
+        return jsonify({"error": "Internal server error", "message": str(e)}), 500
+    
 @app.route("/generate", methods=["POST"])  # ✅ Fixed route
 def generate_content():
     try:
