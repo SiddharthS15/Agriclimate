@@ -11,7 +11,7 @@ import "../styles/dashboard.css";
 const Dashboard = () => {
   return (
     <div className="dashboard-container">
-      <h1 className="dashboard-title">AgriClime Dashboard</h1>
+      <h1 className="dashboard-title">AgriClimate Dashboard</h1>
       <p className="dashboard-description">
         Empowering Agriculture with Climate Intelligence
       </p>

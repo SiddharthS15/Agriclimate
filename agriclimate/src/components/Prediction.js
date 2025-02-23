@@ -70,12 +70,7 @@ const Prediction = () => {
       component: <YieldPrediction onBack={() => setActiveCard(null)} />
     },
     
-    {
-      id: 'disease',
-      title: 'Disease Prediction',
-      image: diseaseImage,
-      component: <DiseasePrediction onBack={() => setActiveCard(null)} />
-    }
+    
   ];
 
   return (
