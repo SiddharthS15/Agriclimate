@@ -133,9 +133,48 @@ def predict_yield():
         return jsonify({"error": str(e)}), 500
 
 API_KEY = "AIzaSyAJKlsTMH2BkxTfnwTH9jNcgNv3rIgrKyA"
-@app.route("/generate", methods=["POST"])  # ✅ Fixed route
-def generate_contents():
+@app.route("/predict_yield_explain", methods=["POST"])
+def predict_yield_explain():
     try:
+        # Get the last prediction from the request
+        data = request.json
+        predicted_yield = data.get("predicted_yield")
+
+        if predicted_yield is None:
+            return jsonify({"error": "No prediction value provided. Please send the predicted yield in the request."}), 400
+
+        # Construct the prompt
+        prompt = f"Explain why the predicted yield of {predicted_yield} tons per hectare for the given conditions."
+
+        # Call Gemini API for explanation
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={API_KEY}"
+        headers = {'Content-Type': 'application/json'}
+        payload = {
+            "contents": [{"parts": [{"text": prompt}]}]
+        }
+
+        response = requests.post(url, headers=headers, json=payload)
+        if response.status_code == 200:
+            result = response.json()
+
+            # Extract AI-generated explanation
+            try:
+                explanation = result["candidates"][0]["content"]["parts"][0]["text"]
+                return jsonify({"response": explanation})
+            except (KeyError, IndexError):
+                return jsonify({"error": "Unexpected response format"}), 500
+        else:
+            return jsonify({"error": f"API Error {response.status_code}", "details": response.text}), response.status_code
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    except Exception as e:
+        return jsonify({"error": "Internal server error", "message": str(e)}), 500
+    
+@app.route("/generate", methods=["POST"])  # ✅ Fixed route
+def generate_content():
+    try:
+        global API_KEY
         # Extract JSON input from the React request
         data = request.json
         prompt = data.get("prompt", "")
@@ -173,46 +212,5 @@ def generate_contents():
     except Exception as e:
         return jsonify({"error": "Internal server error", "message": str(e)}), 500  # General server error
 
-@app.route("/predict_yield_explain", methods=["POST"])
-def generate_content():
-    global last_prediction  # Use the global variable
-
-    try:
-        if last_prediction is None:
-            return jsonify({"error": "No prediction available. Please run the yield prediction first."}), 400
-
-        prompt = f"Explain the predicted crop yield result: {last_prediction} in detail."
-
-        # Gemini API Endpoint
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={API_KEY}"
-        headers = {'Content-Type': 'application/json'}
-        payload = {
-            "contents": [{
-                "parts": [{"text": prompt}]
-            }]
-        }
-
-        # Send request to Gemini API
-        response = requests.post(url, headers=headers, json=payload)
-
-        if response.status_code == 200:
-            result = response.json()
-
-            # Extract AI response safely
-            ai_response = (
-                result.get("candidates", [{}])[0]
-                .get("content", {})
-                .get("parts", [{}])[0]
-                .get("text", "No valid explanation generated.")
-            )
-            # Print the explanation to the console
-            print("Gemini Explanation:", ai_response)
-            return jsonify({"response": ai_response})
-        else:
-            return jsonify({"error": f"API Error {response.status_code}", "details": response.text}), response.status_code
-
-    except Exception as e:
-        return jsonify({"error": "Internal server error", "message": str(e)}), 500  # General server error
-    
 if __name__ == '__main__':
     app.run(debug=True)
