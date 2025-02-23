@@ -1,33 +1,65 @@
 import React, { useEffect, useState } from "react";
 import { fetchWeatherNews } from "../api/newsData";
-import "../styles/alerts.css";
 
-const Alerts = () => {
+const NewsComponent = () => {
     const [news, setNews] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         async function fetchNews() {
-            const newsData = await fetchWeatherNews();
-            setNews(newsData);
+            try {
+                const newsData = await fetchWeatherNews();
+                setNews(newsData);
+            } catch (err) {
+                setError("Failed to fetch news");
+            } finally {
+                setLoading(false);
+            }
         }
         fetchNews();
     }, []);
 
-    return (
-        <div className="alerts-container">
-            <h2>🚨 Weather News Alerts</h2>
-            <div className="alert-section">
-                {news.map((article, index) => (
-                    <div key={index} className="news-item">
-                        <h3>{article.title}</h3>
-                        <p>Source: {article.source}</p>
-                        <a href={article.url} target="_blank" rel="noopener noreferrer">Read More</a>
-                    </div>
-                ))}
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-40">
+                <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-blue-500"></div>
             </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="text-center text-red-500 font-semibold">
+                {error}
+            </div>
+        );
+    }
+
+    return (
+        <div className="max-w-4xl mx-auto my-8 p-6 bg-white shadow-lg rounded-lg">
+            <h2 className="text-2xl font-bold text-center text-blue-600 mb-6">
+                🌱 Latest Agriculture & Weather News
+            </h2>
+            <ul className="space-y-4">
+                {news.map((article, index) => (
+                    <li key={index} className="p-4 bg-gray-100 hover:bg-gray-200 rounded-lg transition">
+                        <a
+                            href={article.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-lg font-semibold text-blue-700 hover:underline"
+                        >
+                            {article.title}
+                        </a>
+                        <p className="text-sm text-gray-600 mt-1">
+                            Source: <span className="font-medium">{article.source}</span>
+                        </p>
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 };
 
-export default Alerts;
-// In the Alerts component, we fetch the latest weather news articles using the fetchWeatherNews function from the weatherData API. The news articles are displayed in a list format with the title, source, and a link to read more about the article. The useEffect hook is used to fetch the news data when the component mounts. The news data is stored in the state variable news using the setNews function. The news articles are then mapped over to display each article in the UI.
+export default NewsComponent;
