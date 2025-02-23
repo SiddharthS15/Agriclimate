@@ -2,16 +2,11 @@ import React from "react";
 import TemperatureRainfallGraph from "./charts/TemperatureRainfallGraph";
 import Temperature from "./charts/Temperature";
 import Windspeed from "./charts/Windspeed";
-// import AQI from "./charts/aqi";
-
-// import CropGrowthGraph from "./charts/CropGrowthGraph";
-// import WaterUsageGraph from "./charts/WaterUsageGraph";
-// import ClimateImpactGraph from "./charts/ClimateImpactGraph";
-// import YieldPredictionGraph from "./charts/YieldPredictionGraph";
-
-import "../styles/dashboard.css";
 import Humidity from "./charts/Humidity";
 import AQI from "./charts/AQIgraph";
+import Rainfall from "./charts/Rainfall";
+
+import "../styles/dashboard.css";
 
 const Dashboard = () => {
   return (
@@ -22,36 +17,34 @@ const Dashboard = () => {
       </p>
 
       <div className="charts-container">
-        {/* Real-Time Temperature First */}
+        {/* Real-Time Temperature */}
         <div className="chart-box">
           <h3>Real-Time Temperature</h3>
-          <Temperature /> {/* This will plot the real-time temperature */}
+          <Temperature />
         </div>
 
-        {/* Other Chart Sections */}
+        {/* Humidity */}
         <div className="chart-box">
           <h3>Humidity</h3>
           <Humidity />
         </div>
 
+        {/* Wind Speed */}
         <div className="chart-box">
           <h3>Windspeed</h3>
-          < Windspeed/>
+          <Windspeed />
         </div>
 
+        {/* Air Quality Index (AQI) */}
         <div className="chart-box">
           <h3>AQI</h3>
           <AQI />
         </div>
 
+        {/* Rainfall */}
         <div className="chart-box">
-          <h3>Climate Impact Risk Assessment</h3>
-          {/* <ClimateImpactGraph /> */}
-        </div>
-
-        <div className="chart-box">
-          <h3>Yield Prediction vs. Climate Variability</h3>
-          {/* <YieldPredictionGraph /> */}
+          <h3>Rainfall</h3>
+          <Rainfall />
         </div>
       </div>
     </div>

@@ -69,12 +69,7 @@ const Prediction = () => {
 
       component: <YieldPrediction onBack={() => setActiveCard(null)} />
     },
-    {
-      id: 'climate',
-      title: 'Climate Prediction',
-      image: climateImage,
-      component: <ClimatePrediction onBack={() => setActiveCard(null)} />
-    },
+    
     {
       id: 'disease',
       title: 'Disease Prediction',
