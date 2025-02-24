@@ -95,7 +95,7 @@ const CropPredictionForm = ({ onBack }) => {
   });
 
   const [predictionResult, setPredictionResult] = useState(null);
-  const [explanationResult, setExplanationResult] = useState(null);
+  const [explanation, setExplanationResult] = useState(null);
   const [error, setError] = useState(null);
 
   const states = Object.keys(formData).filter((key) => key.startsWith("State_"));
@@ -135,6 +135,14 @@ const CropPredictionForm = ({ onBack }) => {
     });
   };
 
+  const convertToHTML = (text) => {
+    return text
+      .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
+      .replace(/\n\* (.*?)(?=\n|$)/g, "<ul><li>$1</li></ul>")
+      .replace(/<\/ul>\n<ul>/g, "")
+      .replace(/([^\n])\n([^\n])/g, "$1<br>$2");
+  };
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -181,7 +189,7 @@ const CropPredictionForm = ({ onBack }) => {
             const explanationResult = await explanationResponse.json();
 
             if (explanationResponse.ok) {
-                setExplanationResult(explanationResult.response);
+                setExplanationResult(convertToHTML(explanationResult.response || "No response received"));
             } else {
                 console.error("Explanation Error:", explanationResult);
                 alert(explanationResult.error || "An error occurred during explanation.");
@@ -267,10 +275,10 @@ const CropPredictionForm = ({ onBack }) => {
       {predictionResult && (
         <div className="result-container">
           <h3 className="result">Predicted Yield: {predictionResult}</h3>
-          {explanationResult && (
+          {explanation && (
             <div className="explanation">
               <h4>Explanation:</h4>
-              <p>{explanationResult}</p>
+              <p dangerouslySetInnerHTML={{ __html: explanation }} />
             </div>
           )}
         </div>

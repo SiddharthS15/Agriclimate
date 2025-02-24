@@ -177,6 +177,7 @@ def predict_yield_explain():
             result = response.json()
             try:
                 explanation = result["candidates"][0]["content"]["parts"][0]["text"]
+                print(explanation)
                 return jsonify({"response": explanation})
             except (KeyError, IndexError):
                 return jsonify({"error": "Unexpected response format"}), 500
