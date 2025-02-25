@@ -23,7 +23,7 @@ def generate_content(api_key, prompt):
         return f"Error: {response.status_code}, {response.text}"
 
 if __name__ == "__main__":
-    api_key = "AIzaSyAJKlsTMH2BkxTfnwTH9jNcgNv3rIgrKyA"  # Replace with your actual API key
+    api_key = ""  # Replace with your actual API key
     user_prompt = input("Enter your prompt: ")
     response = generate_content(api_key, user_prompt)
     print("Response:", response)
