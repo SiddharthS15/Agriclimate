@@ -132,7 +132,7 @@ def predict_yield():
         print("Unexpected error:", str(e))  
         return jsonify({"error": str(e)}), 500
 
-API_KEY = "AIzaSyAJKlsTMH2BkxTfnwTH9jNcgNv3rIgrKyA"
+API_KEY = ""
 
 @app.route("/predict_yield_explain", methods=["POST"])
 def predict_yield_explain():
