@@ -132,7 +132,7 @@ def predict_yield():
         print("Unexpected error:", str(e))  
         return jsonify({"error": str(e)}), 500
 
-API_KEY = "AIzaSyAJKlsTMH2BkxTfnwTH9jNcgNv3rIgrKyA"
+API_KEY = ""
 
 @app.route("/predict_yield_explain", methods=["POST"])
 def predict_yield_explain():
@@ -177,6 +177,7 @@ def predict_yield_explain():
             result = response.json()
             try:
                 explanation = result["candidates"][0]["content"]["parts"][0]["text"]
+                print(explanation)
                 return jsonify({"response": explanation})
             except (KeyError, IndexError):
                 return jsonify({"error": "Unexpected response format"}), 500

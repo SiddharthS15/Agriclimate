@@ -95,7 +95,7 @@ const CropPredictionForm = ({ onBack }) => {
   });
 
   const [predictionResult, setPredictionResult] = useState(null);
-  const [explanationResult, setExplanationResult] = useState(null);
+  const [explanation, setExplanationResult] = useState(null);
   const [error, setError] = useState(null);
 
   const states = Object.keys(formData).filter((key) => key.startsWith("State_"));
@@ -135,6 +135,14 @@ const CropPredictionForm = ({ onBack }) => {
     });
   };
 
+  const convertToHTML = (text) => {
+    return text
+      .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
+      .replace(/\n\* (.*?)(?=\n|$)/g, "<ul><li>$1</li></ul>")
+      .replace(/<\/ul>\n<ul>/g, "")
+      .replace(/([^\n])\n([^\n])/g, "$1<br>$2");
+  };
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -146,61 +154,56 @@ const CropPredictionForm = ({ onBack }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Convert form data to an ordered array of feature values.
-    // Empty values are converted to 0 and others parsed as numbers.
     const featureValues = Object.values(formData).map((value) =>
-      value === "" ? 0 : parseFloat(value)
+        value === "" ? 0 : parseFloat(value)
     );
 
     const requestData = {
-      features: featureValues
+        features: featureValues
     };
 
-    console.log("Sending data:", requestData);
-
     try {
-      // Call yield prediction endpoint.
-      const response = await fetch('http://127.0.0.1:5000/predict-yield', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestData)
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        console.log("Prediction Result:", result);
-        setPredictionResult(result.predicted_yield);
-
-        // Now call the explanation endpoint.
-        const explanationResponse = await fetch('http://127.0.0.1:5000/predict_yield_explain', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ predicted_yield: result.predicted_yield }) // Send last prediction
+        const response = await fetch('http://127.0.0.1:5000/predict-yield', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestData)
         });
-        
-        
 
-        const explanationData = await explanationResponse.json();
+        const result = await response.json();
 
-        if (explanationResponse.ok) {
-          console.log("Explanation Result:", explanationData);
-          // Update state so that the explanation is shown on the frontend.
-          setExplanationResult(explanationData.response);
-;
+        if (response.ok) {
+            setPredictionResult(result.predicted_yield);
+
+            // Prepare input data for explanation
+            const explanationData = {
+                predicted_yield: result.predicted_yield,
+                input_features: formData // Send raw input data for better explanation
+            };
+
+            const explanationResponse = await fetch('http://127.0.0.1:5000/predict_yield_explain', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(explanationData)
+            });
+
+            const explanationResult = await explanationResponse.json();
+
+            if (explanationResponse.ok) {
+                setExplanationResult(convertToHTML(explanationResult.response || "No response received"));
+            } else {
+                console.error("Explanation Error:", explanationResult);
+                alert(explanationResult.error || "An error occurred during explanation.");
+            }
         } else {
-          console.error("Explanation Error:", explanationData);
-          alert(explanationData.error || "An error occurred during explanation.");
+            console.error("Error Response:", result);
+            alert(result.error || "An error occurred during prediction.");
         }
-      } else {
-        console.error("Error Response:", result);
-        alert(result.error || "An error occurred during prediction.");
-      }
     } catch (err) {
-      console.error("Fetch Error:", err);
-      alert("An error occurred while communicating with the server.");
+        console.error("Fetch Error:", err);
+        alert("An error occurred while communicating with the server.");
     }
-  };
+};
+
 
   return (
     <div className="crop-prediction-container">
@@ -272,10 +275,10 @@ const CropPredictionForm = ({ onBack }) => {
       {predictionResult && (
         <div className="result-container">
           <h3 className="result">Predicted Yield: {predictionResult}</h3>
-          {explanationResult && (
+          {explanation && (
             <div className="explanation">
               <h4>Explanation:</h4>
-              <p>{explanationResult}</p>
+              <p dangerouslySetInnerHTML={{ __html: explanation }} />
             </div>
           )}
         </div>
